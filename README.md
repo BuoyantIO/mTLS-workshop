@@ -29,7 +29,7 @@ workloads: a [curl](manifests/curl.yaml) pod and an
 
 ```sh
 $ kubectl get deploy curl -o yaml \
-| linkerd inject -
+| linkerd inject - \
 | kubectl apply -f -
 
 deployment "curl" injected
@@ -85,7 +85,7 @@ $ kubectl exec <nginx-pod> -it -c linkerd-debug -- bin/bash
 
 ```sh
 $ kubectl get deploy nginx-deploy -o yaml \ 
-| linkerd inject -
+| linkerd inject - \
 | kubectl apply -f -
 
 deployment "nginx-deploy" injected
@@ -96,7 +96,7 @@ deployment.apps/nginx-deploy configured
 # since these packets will be in plaintext.
 #
 $ kubectl exec <nginx-pod> -it -c linkerd-debug -- bin/bash
-/ $ tshark -i any -d tcp.port==80,ssl | grep -v 127.0.01
+/ $ tshark -i any -d tcp.port==80,ssl | grep -v 127.0.0.1
 
 # Send a request from curl pod.
 # Notice in this case, we no longer get the 'HTTP' protocol in the protocol
