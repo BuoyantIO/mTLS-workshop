@@ -22,7 +22,18 @@ $ kubectl deploy -f manifests/nginx-deploy.yaml
 $ kubectl exec curl -it -- bin/sh
 $ kubectl exec nginx -it -c linkerd-debug -- bin/bash
 
-/$ tshark -i any -d tcp.port==80,http
+/$ tshark -i any -d tcp.port==80,http # will decode packets to tcp port 80 as http
+/$ tshark -s0 -i eth0 -w testcap.pcap 
+    # start capture and save to file 
+    # -s0 snaplen 0 => full packet is captured
+/$ tshark -r testcap.pcap # show raw packet
+/$ tshark -r testcap.pcap -V # show packet details
+/$ tshark -r testcap.pcap -Px -Y http
+   # -P: print summary of packet
+   # -x: see ASCII dump (i.e contents of packet)
+   # -Y http: filter only http packets
+   # man tshark for more
+
 ```
 
 # Step 4: deploy Linkerd + certs
