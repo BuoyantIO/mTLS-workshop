@@ -12,8 +12,8 @@ $ curl https://run.linkerd.io/install | sh -
 $ less manifests/curl.yaml
 $ less manifests/nginx-deploy.yaml
 
-$ kubectl deploy -f manifests/curl.yaml
-$ kubectl deploy -f manifests/nginx-deploy.yaml
+$ kubectl apply -f manifests/curl.yaml
+$ kubectl apply -f manifests/nginx-deploy.yaml
 ```
 
 # Step 3: verifying (no) mTLS!
