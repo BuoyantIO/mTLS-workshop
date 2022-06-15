@@ -5,5 +5,4 @@ metadata:
  name: my-vault-token
  namespace: cert-manager
 data:
-  token: "aHZzLkNBRVNJQ2FqX0YtVkRqUF9Oak5VRHpZR1ZNT3Y1U2VLY3BqaWNJSkd1OEoycmZYYUdoNEtIR2gyY3k1SFIyaFROemcxZG5SVVYxZHdaMk16UW5SSFpGaHROak0K"
-
+  token: "aHZzLkNBRVNJT2hvQkZfd01INGZUd09iZ01PU2FRb19Va05GWXdNU2Z5S0NUcTFTLWRkaUdoNEtIR2gyY3k1eldrWk9UbVJ2Ukd4QmRWVktNa1o1U0VsWlpVWXdOMUUK"
