@@ -6,7 +6,7 @@ spec:
   sources:
   - secret:
       name: "linkerd-identity-trust-roots"
-      key: "ca.crt"
+      key: "tls.crt"
   target:
     configMap:
       key: "ca-bundle.crt"
