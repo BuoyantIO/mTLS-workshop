@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
- name: my-vault-token
- namespace: cert-manager
-data:
-  token: "aHZzLkNBRVNJT2hvQkZfd01INGZUd09iZ01PU2FRb19Va05GWXdNU2Z5S0NUcTFTLWRkaUdoNEtIR2gyY3k1eldrWk9UbVJ2Ukd4QmRWVktNa1o1U0VsWlpVWXdOMUUK"

@@ -1,3 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: linkerd
+---
 apiVersion: trust.cert-manager.io/v1alpha1
 kind: Bundle
 metadata:
@@ -5,8 +10,8 @@ metadata:
 spec:
   sources:
   - secret:
-      name: "linkerd-identity-trust-roots"
-      key: "tls.crt"
+      name: "linkerd-identity-issuer"
+      key: "ca.crt"
   target:
     configMap:
       key: "ca-bundle.crt"
