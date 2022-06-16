@@ -39,4 +39,4 @@ can be found in the steps substantiated in the [pki-workshop-vault] directory.
 [sma]: https://buoyant.io/service-mesh-academy/
 [mtls-workshop]: ./mtls-workshop/STEPS.md
 [pki-workshop-vault]: ./pki-workshop-vault/STEPS.md
-[pki-workshop-venafi-tpp]: ./pki-workshop-venafi-tpp/STEPS.md
+[pki-workshop-venafi-tpp]: ./pki-workshop-venafi-tpp/README.md
