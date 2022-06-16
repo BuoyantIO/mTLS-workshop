@@ -5,9 +5,9 @@ metadata:
   namespace: cert-manager
 spec:
   vault:
-    path: pki/sign-intermediate/cert-manager
-    server: http://172.29.0.1:8200
+    path: pki/root/sign-intermediate
+    server: http://192.168.0.1:8200
     auth:
       tokenSecretRef:
-         name: my-vault-token
+         name: my-secret-token
          key: token

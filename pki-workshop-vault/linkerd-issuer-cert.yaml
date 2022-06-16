@@ -1,19 +1,14 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: linkerd
----
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: linkerd-identity-issuer
-  namespace: linkerd
+  namespace: cert-manager
 spec:
   secretName: linkerd-identity-issuer
   duration: 48h
   renewBefore: 25h
   issuerRef:
-    name: linkerd-trust-anchor
+    name: vault-issuer
     kind: ClusterIssuer
   commonName: identity.linkerd.cluster.local
   dnsNames:

@@ -50,7 +50,6 @@ is to apply a network utils pod, exec onto it, and resolve
 $ k3d cluster create demo
 
 # Run a shell pod and make a note of what nslookup returns
-
 $ kubectl run tmp-shell --tty --image nicolaka/netshoot -i -- /bin/bash
 bash-5.1# nslookup host.k3d.internal
 Name:   host.k3d.internal
@@ -91,8 +90,7 @@ $ VAULT_ADDR=http://0.0.0.0:8200 vault secrets enable pki
 
 # Test Vault connectivity
 $ kubectl exec tmp-shell -it -- bash
-  bash-5.1# curl -s http://<ip-address>:8200/v1/sys/seal/status
-# where <ip-address> is the IP address we previously extracted
+  bash-5.1# dig +short host.k3d.internal | xargs -I{} curl -s http://{}:8200/v1/sys/seal-status
 ```
 
 * We need to configure `Vault` with the pki endpoints, and we need to tell
@@ -113,23 +111,12 @@ $ vault secrets enable pki
 $ vault secrets tune -max-lease-ttl=8760h pki
 
 # Generate a root CA keypair
-$ vault write pki/root/generate/internal common_name=foo.com ttl=8760h
+$ vault write pki/root/generate/internal common_name=root.linkerd.cluster.local ttl=8760h key_type=ec
 
 # Configure vault endpoints, we can use the address of our vault server (127.0.0.1:8200)
 $ vault write pki/config/urls \
    issuing_certificates="http://127.0.0.1:8200/v1/pki/ca" \
    crl_distribution_points="http://127.0.0.1:8200/v1/pki/crl"
-
-# Create a pki role to be used by cert-manager to sign certificates
-$ vault write pki/roles/cert-manager \
-   allow_subdomains=true \
-   allow_any_name=true \
-   allow_localhost=true \
-   enforce_hostnames=false \
-   max_ttl=8760h \
-   key_type=any \
-   key_usage= \
-   ext_key_usage=
 
 # Create a vault policy
 $ echo 'path "pki*" {  capabilities = ["create", "read", "update", "delete", "list", "sudo"]}' \
@@ -143,7 +130,10 @@ $ vault write /auth/token/create policies="pki_policy" \
 
 # Copy token, encode it and create a k8s secret in the cert-manager namespace.
 # See `token.yaml` for an example
-# you can add the token value and apply the file
+$ kubectl create secret generic \
+       my-secret-token \
+       --namespace=cert-manager \
+       --from-literal=token={token}
 ```
 
 ## Deploy the manifests
@@ -179,8 +169,6 @@ cert-manager-76578c9687-v8zm6              1/1     Running   0          2m34s
 cert-manager-webhook-556f979d7f-k24bj      1/1     Running   0          2m34s
 cert-manager-trust-5c4b6f8ff6-d5k2k        1/1     Running   0          36s
 
-# Apply the token from the last step
-$ kubectl apply -f token.yaml
 ```
 
 * Linkerd requires two CAs: a root CA (trust anchor) and an intermediate signed
@@ -203,11 +191,11 @@ them to be signed by the CA we generated in our external issuer
 #   namespace: cert-manager
 # spec:
 #   vault:
-#     path: pki/sign-intermediate/cert-manager # our endpoint
+#     path: pki/root/sign-intermediate # our endpoint
 #     server: http://172.28.0.1:8200 # our addressable vault server
 #     auth:
 #       tokenSecretRef:
-#          name: my-vault-token # ref to the token applied in 2nd step
+#          name: my-secret-token # ref to the token applied in 2nd step
 #          key: token
 #
 # this manifest is taken from vault-issuer.yaml
@@ -230,14 +218,17 @@ CA and our intermediate cert.
 # no need to change them
 #
 
-# Create trust root
-$ kubectl apply -f linkerd-trust-anchor.yaml
-
 # Create issuer cert
 $ kubectl apply -f linkerd-issuer-cert.yaml
 
 # Create bundle to turn trust root into a cm
-$ kubectl apply -f linkerd-trust-anchor-bundle.yaml
+$ kubectl apply -f linkerd-root-bundle.yaml
+
+# Copy secret over to linkerd namespace
+$ kubectl get secret linkerd-identity-issuer --namespace=cert-manager -o yaml \
+  | grep -v '^\s*namespace:\s'  \
+  | k apply --namespace=linkerd -f -
+
 
 ```
 
