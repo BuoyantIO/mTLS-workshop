@@ -414,4 +414,4 @@ And finally you can connect to the emojivoto web UI using a tunnel:
 kubectl -n emojivoto port-forward svc/web-svc 8080:80
 ```
 
-Point your web browser at http://localhost:80808
+Point your web browser at http://localhost:8080

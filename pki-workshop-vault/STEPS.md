@@ -227,7 +227,7 @@ $ kubectl apply -f linkerd-root-bundle.yaml
 # Copy secret over to linkerd namespace
 $ kubectl get secret linkerd-identity-issuer --namespace=cert-manager -o yaml \
   | grep -v '^\s*namespace:\s'  \
-  | k apply --namespace=linkerd -f -
+  | kubectl apply --namespace=linkerd -f -
 
 
 ```

@@ -6,7 +6,7 @@ metadata:
 spec:
   vault:
     path: pki/root/sign-intermediate
-    server: http://192.168.0.1:8200
+    server: http://<hostIP>:8200 # resolve host.k3d.internal to get your hostIP
     auth:
       tokenSecretRef:
          name: my-secret-token
